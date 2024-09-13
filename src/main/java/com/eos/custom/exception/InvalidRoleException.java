@@ -1,0 +1,12 @@
+package com.eos.custom.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class InvalidRoleException extends RuntimeException {
+
+	   public InvalidRoleException(String message) {
+		   super(message);
+	   }
+}
