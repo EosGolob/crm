@@ -2,12 +2,15 @@ package com.eos.enitity;
 
 import java.sql.Date;
 
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -19,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table (name = "pro_discrp")
+@JsonIgnoreProperties({"requestUserEntity"})
 public class ProjectDescriptionEntity {
 	
 	@Id
@@ -44,9 +48,8 @@ public class ProjectDescriptionEntity {
 	@Column(name = "main_cost")
 	private  Double projectMaintanceCost;
 	
-	@OneToOne(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private RequestUserEntity requestUser;
-	
-	
-
+    @OneToOne
+    @JoinColumn(name = "requestUserEntity_id")
+    @JsonBackReference
+    private RequestUserEntity requestUserEntity;
 }

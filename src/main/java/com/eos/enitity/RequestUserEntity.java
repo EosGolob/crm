@@ -4,6 +4,10 @@ import java.sql.Date;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,12 +23,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "req_Entity")
+@JsonIgnoreProperties({"project"})
 public class RequestUserEntity {
 
 	  @Id
@@ -41,7 +44,7 @@ public class RequestUserEntity {
 	  private Long empId;
 	  
 	  @Column(name ="discrp")
-	  private String discreption;
+	  private String description;
 	  
 	  @Column(name = "type")
 	  private String type;
@@ -52,8 +55,7 @@ public class RequestUserEntity {
 	  @Column(name = "statLevTwo")
 	  private boolean statusLevelTwo;
 	  
-	  @OneToOne
-	  @JoinColumn(name = "project_id", referencedColumnName = "project_Id", nullable = false)
+	  @OneToOne( mappedBy = "requestUserEntity" ,cascade = CascadeType.ALL)
+	  @JsonManagedReference
 	  private ProjectDescriptionEntity project;
-
 }

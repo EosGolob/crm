@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.eos.custom.exception.InvalidRoleException;
 import com.eos.custom.exception.ResourceNotFoundException;
 import com.eos.dto.RequestUserDto;
+import com.eos.enitity.ProjectDescriptionEntity;
 import com.eos.enitity.RequestUserEntity;
 import com.eos.mapper.RequestUserMapper;
+import com.eos.repository.ProjectDiscreptionRepository;
 import com.eos.repository.RequestUserRepository;
 import com.eos.service.RequestUserService;
 
@@ -20,11 +22,14 @@ public class RequestUserServiceImpl  implements RequestUserService{
 	@Autowired
 	RequestUserRepository requestUserRepository;
 	
+	@Autowired 
+	ProjectDiscreptionRepository projectDiscreptionRepository;
+	
 	@Override
 	public RequestUserDto createRequest(RequestUserDto requestUserDto) {
-		RequestUserEntity requestUserEntity = RequestUserMapper.mapToRequestUserDto(requestUserDto);
+		RequestUserEntity requestUserEntity = RequestUserMapper.mapToRequestUserEntity(requestUserDto);
 		RequestUserEntity saveRequestUserEntity = requestUserRepository.save(requestUserEntity);
-		return RequestUserMapper.mapToRequestUserEntity(saveRequestUserEntity);
+		return RequestUserMapper.mapToRequestUserDto(saveRequestUserEntity);
 	}
 
 	@Override
@@ -36,9 +41,11 @@ public class RequestUserServiceImpl  implements RequestUserService{
 		}
 		return request.stream()
 				      .sorted((id1,id2) -> Long.compare(id2.getId(), id1.getId()))
-				      .map(RequestUserMapper::mapToRequestUserEntity)
+				      .map(RequestUserMapper::mapToRequestUserDto)
 				      .collect(Collectors.toList());
+		
 	}
+
 
 	@Override
 	public RequestUserDto updateUserRequestStatus(Long requestId, String role) {
@@ -52,7 +59,17 @@ public class RequestUserServiceImpl  implements RequestUserService{
 			throw new InvalidRoleException("Role is Not Valid Or Not Present" +role);
 		}
 		RequestUserEntity update = requestUserRepository.save(request);
-		return RequestUserMapper.mapToRequestUserEntity(update);
+		return RequestUserMapper.mapToRequestUserDto(update);
+	}
+
+	@Override
+	public RequestUserDto projectDetailsUpdate(Long id, ProjectDescriptionEntity projectDescriptionEntity) {
+		RequestUserEntity request = requestUserRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Emp is not present"));
+		request.setStatusLevelTwo(true);
+		requestUserRepository.save(request);
+		projectDescriptionEntity.setRequestUserEntity(request);
+		projectDiscreptionRepository.save(projectDescriptionEntity);
+		return null;
 	}
 
 }

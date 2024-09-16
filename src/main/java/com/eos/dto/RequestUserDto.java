@@ -25,5 +25,5 @@ public class RequestUserDto {
 	  private String type;
       private boolean statusLevelOne;
 	  private boolean statusLevelTwo;
-	  private ProjectDescriptionEntity project;
+//	  private ProjectDescriptionEntity project;
 }
